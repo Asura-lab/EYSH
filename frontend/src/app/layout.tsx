@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ThemeProvider from "@/components/providers/ThemeProvider";
+import AuthProvider from "@/components/providers/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "EYSH - Элсэлтийн Шалгалтанд Бэлдэх",
-  description: "Сурагчдад зориулсан элсэлтийн шалгалтанд бэлдэх систем",
+  description: "Сурагчдад зориулсан элсэлтийн шалгалтанд бэлдэх үнэгүй систем",
 };
 
 export default function RootLayout({
@@ -15,8 +17,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="mn">
-      <body className={inter.className}>{children}</body>
+    <html lang="mn" suppressHydrationWarning>
+      <body className={`${inter.className} bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors`}>
+        <AuthProvider>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </AuthProvider>
+      </body>
     </html>
   );
 }
