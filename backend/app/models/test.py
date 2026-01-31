@@ -27,9 +27,13 @@ class QuestionInTest(BaseModel):
     id: str
     subject: str
     topic: str
+    topic_mn: str = ""
     difficulty: int
     content: str
     options: List[str]
+    correct_answer: Optional[int] = None  # Include for frontend grading
+    explanation: Optional[str] = None
+    time_limit: int = 60  # seconds
     # correct_answer hidden from student
 
 

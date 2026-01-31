@@ -1,0 +1,58 @@
+{
+  "level_predictor": {
+    "features": [
+      "correct_ratio",
+      "avg_time_per_question",
+      "hard_correct_ratio",
+      "algebra_score",
+      "geometry_score",
+      "trigonometry_score",
+      "calculus_score",
+      "probability_score"
+    ],
+    "output": "level (1-10)",
+    "model_type": "RandomForestClassifier",
+    "accuracy": 0.479
+  },
+  "weakness_detector": {
+    "features": [
+      "algebra_score",
+      "geometry_score",
+      "trigonometry_score",
+      "calculus_score",
+      "probability_score",
+      "sequences_score",
+      "functions_score",
+      "vectors_score"
+    ],
+    "output": "weakest_topic_index",
+    "topics": [
+      "algebra",
+      "geometry",
+      "trigonometry",
+      "calculus",
+      "probability",
+      "sequences",
+      "functions",
+      "vectors"
+    ],
+    "model_type": "RandomForestClassifier"
+  },
+  "roadmap_generator": {
+    "features": [
+      "current_level",
+      "target_level",
+      "weeks_available",
+      "algebra_score",
+      "geometry_score",
+      "trigonometry_score",
+      "calculus_score",
+      "probability_score",
+      "sequences_score",
+      "functions_score",
+      "vectors_score"
+    ],
+    "output": "recommended_hours_per_week",
+    "model_type": "GradientBoostingRegressor"
+  }
+}

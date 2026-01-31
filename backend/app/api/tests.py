@@ -15,30 +15,48 @@ ml_service = MLService()
 @router.get("/questions", response_model=List[QuestionInTest])
 async def get_questions(
     subject: Optional[str] = None,
-    count: int = Query(default=10, ge=1, le=50),
-    current_user: dict = Depends(get_current_user)
+    count: int = Query(default=10, ge=1, le=50)
 ):
-    """Тест авахад зориулсан асуултууд авах"""
+    """Тест авахад зориулсан асуултууд авах (auth шаардахгүй)"""
     questions_col = get_questions_collection()
     
     query = {}
     if subject:
         query["subject"] = subject
     
-    cursor = questions_col.aggregate([
+    # Topic MN mapping
+    topic_mn_map = {
+        "algebra": "Алгебр",
+        "geometry": "Геометр",
+        "trigonometry": "Тригонометр",
+        "calculus": "Анализ",
+        "probability": "Магадлал",
+        "sequences": "Дараалал",
+        "functions": "Функц",
+        "vectors": "Вектор"
+    }
+    
+    # Use to_list() instead of async for loop for reliability
+    pipeline = [
         {"$match": query},
         {"$sample": {"size": count}}
-    ])
+    ]
+    
+    docs = await questions_col.aggregate(pipeline).to_list(length=count)
     
     questions = []
-    async for q in cursor:
+    for q in docs:
         questions.append(QuestionInTest(
             id=str(q["_id"]),
-            subject=q["subject"],
-            topic=q["topic"],
-            difficulty=q["difficulty"],
-            content=q["content"],
-            options=q["options"]
+            subject=q.get("subject", "Математик"),
+            topic=q.get("topic", ""),
+            topic_mn=topic_mn_map.get(q.get("topic", ""), q.get("topic_mn", "")),
+            difficulty=q.get("difficulty", 2),
+            content=q.get("content", q.get("question", "")),
+            options=q.get("options", []),
+            correct_answer=q.get("correct_answer"),
+            explanation=q.get("explanation", ""),
+            time_limit=q.get("time_limit", 60)
         ))
     
     return questions

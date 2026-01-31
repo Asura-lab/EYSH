@@ -108,71 +108,71 @@ export default function RoadmapPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
 
-      <main className="ml-64 p-8">
+      <main className="lg:ml-72 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8">
         {/* Header */}
-        <div className="flex items-start justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6 lg:mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Сургалтын Roadmap</h1>
-            <p className="text-gray-600 dark:text-gray-300">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">Сургалтын Roadmap</h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
               Таны хувийн сургалтын төлөвлөгөө - Математик
             </p>
           </div>
-          <div className="text-right">
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Нийт явц</p>
-            <p className="text-3xl font-bold text-blue-600">{totalProgress}%</p>
+          <div className="text-left sm:text-right">
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">Нийт явц</p>
+            <p className="text-2xl sm:text-3xl font-bold text-blue-600">{totalProgress}%</p>
           </div>
         </div>
 
         {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 lg:mb-8">
           <Card>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/50 rounded-xl flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-green-600" />
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 dark:bg-green-900/50 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">12</p>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">Дуусгасан сэдэв</p>
+                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">12</p>
+                <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">Дуусгасан сэдэв</p>
               </div>
             </div>
           </Card>
           <Card>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center">
-                <Play className="w-6 h-6 text-blue-600" />
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 dark:bg-blue-900/50 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                <Play className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">1</p>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">Идэвхтэй сэдэв</p>
+                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">1</p>
+                <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">Идэвхтэй сэдэв</p>
               </div>
             </div>
           </Card>
           <Card>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-xl flex items-center justify-center">
-                <Clock className="w-6 h-6 text-purple-600" />
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 dark:bg-purple-900/50 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">24.5</p>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">Нийт цаг</p>
+                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">24.5</p>
+                <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">Нийт цаг</p>
               </div>
             </div>
           </Card>
           <Card>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/50 rounded-xl flex items-center justify-center">
-                <Target className="w-6 h-6 text-orange-600" />
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 dark:bg-orange-900/50 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                <Target className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">85%</p>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">Зорилгын биелэлт</p>
+                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">85%</p>
+                <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">Зорилгын биелэлт</p>
               </div>
             </div>
           </Card>
         </div>
 
         {/* Roadmap */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {modules.map((module, moduleIndex) => (
             <Card key={module.id} className="overflow-hidden">
               {/* Module Header */}

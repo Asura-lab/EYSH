@@ -126,32 +126,32 @@ export default function MentorsPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
 
-      <main className="ml-64 p-8">
+      <main className="lg:ml-72 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Менторууд</h1>
-          <p className="text-gray-600 dark:text-gray-300">
+        <div className="mb-6 lg:mb-8">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">Менторууд</h1>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
             500+ туршлагатай ах эгч нараас өөрт тохирохыг олоорой
           </p>
         </div>
 
         {/* Filters */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-8">
-          <div className="flex flex-col lg:flex-row gap-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-3 sm:p-4 mb-6 lg:mb-8">
+          <div className="flex flex-col gap-3 sm:gap-4">
             <div className="flex-1">
               <Input
                 placeholder="Ментор эсвэл хичээл хайх..."
-                leftIcon={<Search className="w-5 h-5" />}
+                leftIcon={<Search className="w-4 h-4 sm:w-5 sm:h-5" />}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-2 lg:pb-0">
+            <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
               {subjects.map((subject) => (
                 <button
                   key={subject}
                   onClick={() => setSelectedSubject(subject)}
-                  className={`px-4 py-2 rounded-xl font-medium whitespace-nowrap transition ${
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-medium text-sm whitespace-nowrap transition ${
                     selectedSubject === subject
                       ? "bg-blue-600 text-white"
                       : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
@@ -165,53 +165,53 @@ export default function MentorsPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-6 lg:mb-8">
           <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <Users className="w-6 h-6" />
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                <Users className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
               <div>
-                <p className="text-2xl font-bold">500+</p>
-                <p className="text-blue-100">Бүртгэлтэй ментор</p>
+                <p className="text-xl sm:text-2xl font-bold">500+</p>
+                <p className="text-blue-100 text-sm sm:text-base">Бүртгэлтэй ментор</p>
               </div>
             </div>
           </Card>
           <Card className="bg-gradient-to-br from-green-500 to-emerald-600 text-white">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <CheckCircle className="w-6 h-6" />
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
               <div>
-                <p className="text-2xl font-bold">95%</p>
-                <p className="text-green-100">Сэтгэл ханамж</p>
+                <p className="text-xl sm:text-2xl font-bold">95%</p>
+                <p className="text-green-100 text-sm sm:text-base">Сэтгэл ханамж</p>
               </div>
             </div>
           </Card>
           <Card className="bg-gradient-to-br from-purple-500 to-pink-600 text-white">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <Star className="w-6 h-6" />
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                <Star className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
               <div>
-                <p className="text-2xl font-bold">4.8</p>
-                <p className="text-purple-100">Дундаж үнэлгээ</p>
+                <p className="text-xl sm:text-2xl font-bold">4.8</p>
+                <p className="text-purple-100 text-sm sm:text-base">Дундаж үнэлгээ</p>
               </div>
             </div>
           </Card>
         </div>
 
         {/* Mentor List */}
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
           {filteredMentors.map((mentor) => (
             <Card key={mentor.id} hover className="relative">
               {/* Favorite Button */}
               <button
                 onClick={() => toggleFavorite(mentor.id)}
-                className="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                className="absolute top-4 right-4 sm:top-6 sm:right-6 p-1.5 sm:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               >
                 <Heart
-                  className={`w-5 h-5 ${
+                  className={`w-4 h-4 sm:w-5 sm:h-5 ${
                     favorites.includes(mentor.id)
                       ? "text-red-500 fill-red-500"
                       : "text-gray-400"
@@ -219,33 +219,33 @@ export default function MentorsPage() {
                 />
               </button>
 
-              <div className="flex gap-4">
+              <div className="flex gap-3 sm:gap-4">
                 {/* Avatar */}
-                <div className="relative">
-                  <Avatar size="xl" status={mentor.isOnline ? "online" : "offline"} />
+                <div className="relative flex-shrink-0">
+                  <Avatar size="lg" status={mentor.isOnline ? "online" : "offline"} />
                 </div>
 
                 {/* Info */}
-                <div className="flex-1">
-                  <div className="flex items-start justify-between mb-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between mb-1 sm:mb-2">
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white">{mentor.name}</h3>
-                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm mt-1">
-                        <GraduationCap className="w-4 h-4" />
-                        <span>{mentor.university} • {mentor.major}</span>
+                      <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 dark:text-white truncate pr-8">{mentor.name}</h3>
+                      <div className="flex items-center gap-1 sm:gap-2 text-gray-600 dark:text-gray-300 text-xs sm:text-sm mt-0.5 sm:mt-1">
+                        <GraduationCap className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                        <span className="truncate">{mentor.university} • {mentor.major}</span>
                       </div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{mentor.year}</p>
+                      <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{mentor.year}</p>
                     </div>
                   </div>
 
                   {/* Rating */}
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center gap-1 sm:gap-2 mb-2 sm:mb-3">
                     <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                      <span className="font-bold text-gray-900 dark:text-white">{mentor.rating}</span>
+                      <Star className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 fill-yellow-400" />
+                      <span className="font-bold text-sm sm:text-base text-gray-900 dark:text-white">{mentor.rating}</span>
                     </div>
                     <span className="text-gray-400">•</span>
-                    <span className="text-gray-600 dark:text-gray-300 text-sm">{mentor.reviews} үнэлгээ</span>
+                    <span className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">{mentor.reviews} үнэлгээ</span>
                   </div>
 
                   {/* Subjects */}
