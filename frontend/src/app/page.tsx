@@ -12,7 +12,7 @@ export default function Home() {
           
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-12">
             <div className="bg-white p-6 rounded-xl shadow-lg">
-              <div className="text-4xl mb-4">📊</div>
+              <div className="text-4xl mb-4 text-blue-600 font-bold">1</div>
               <h3 className="text-lg font-semibold mb-2">Түвшин Тодорхойлох</h3>
               <p className="text-gray-600 text-sm">
                 AI-д суурилсан тест авч, өөрийн түвшинг мэдэх
@@ -20,7 +20,7 @@ export default function Home() {
             </div>
             
             <div className="bg-white p-6 rounded-xl shadow-lg">
-              <div className="text-4xl mb-4">🗺️</div>
+              <div className="text-4xl mb-4 text-green-600 font-bold">2</div>
               <h3 className="text-lg font-semibold mb-2">Хувийн Roadmap</h3>
               <p className="text-gray-600 text-sm">
                 Танд зориулсан сургалтын төлөвлөгөө
@@ -28,7 +28,7 @@ export default function Home() {
             </div>
             
             <div className="bg-white p-6 rounded-xl shadow-lg">
-              <div className="text-4xl mb-4">👨‍🏫</div>
+              <div className="text-4xl mb-4 text-purple-600 font-bold">3</div>
               <h3 className="text-lg font-semibold mb-2">Mentor Олох</h3>
               <p className="text-gray-600 text-sm">
                 Дээд курсийн ах эгч нараас суралцах
