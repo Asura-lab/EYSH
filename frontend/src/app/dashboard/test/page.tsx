@@ -28,6 +28,7 @@ import {
   Timer,
   PieChart,
 } from "lucide-react";
+import { useSidebar } from "@/components/providers/SidebarProvider";
 
 interface Question {
   id: string;
@@ -140,7 +141,8 @@ const mockQuestions: Question[] = [
 export default function TestPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  
+  const { collapsed } = useSidebar();
+
   // Test mode config
   const testModes: Record<string, TestModeConfig> = {
     quick: {
@@ -156,7 +158,7 @@ export default function TestPage() {
       description: "Нарийвчилсан дүгнэлт"
     }
   };
-  
+
   // States
   const [loading, setLoading] = useState(true);
   const [testMode, setTestMode] = useState<TestMode>(null);
@@ -183,7 +185,7 @@ export default function TestPage() {
   // Timer
   useEffect(() => {
     if (!testStarted || testFinished) return;
-    
+
     const timer = setInterval(() => {
       setTimeRemaining((prev) => {
         if (prev <= 1) {
@@ -193,7 +195,7 @@ export default function TestPage() {
         return prev - 1;
       });
     }, 1000);
-    
+
     return () => clearInterval(timer);
   }, [testStarted, testFinished]);
 
@@ -207,7 +209,7 @@ export default function TestPage() {
     try {
       setLoading(true);
       const res = await fetch(`${API_URL}/api/tests/questions?count=${count}`);
-      
+
       if (res.ok) {
         const data = await res.json();
         if (data && data.length > 0) {
@@ -269,14 +271,14 @@ export default function TestPage() {
     if (selectedAnswer !== null && questions[currentIndex]) {
       const timeSpent = Math.round((Date.now() - questionStartTime) / 1000);
       const currentQuestion = questions[currentIndex];
-      
+
       const answer: Answer = {
         question_id: currentQuestion.id,
         answer: selectedAnswer,
         time_spent: timeSpent,
         is_correct: selectedAnswer === currentQuestion.correct_answer
       };
-      
+
       setAnswers((prev) => {
         const existing = prev.findIndex(a => a.question_id === currentQuestion.id);
         if (existing >= 0) {
@@ -291,7 +293,7 @@ export default function TestPage() {
 
   const handleNextQuestion = () => {
     saveCurrentAnswer();
-    
+
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
       const nextAnswer = answers.find(a => a.question_id === questions[currentIndex + 1]?.id);
@@ -302,7 +304,7 @@ export default function TestPage() {
 
   const handlePrevQuestion = () => {
     saveCurrentAnswer();
-    
+
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
       const prevAnswer = answers.find(a => a.question_id === questions[currentIndex - 1]?.id);
@@ -312,8 +314,8 @@ export default function TestPage() {
   };
 
   const handleToggleFlag = () => {
-    setFlagged((prev) => 
-      prev.includes(currentIndex) 
+    setFlagged((prev) =>
+      prev.includes(currentIndex)
         ? prev.filter(i => i !== currentIndex)
         : [...prev, currentIndex]
     );
@@ -330,7 +332,7 @@ export default function TestPage() {
   const calculateResult = (finalAnswers: Answer[]) => {
     const correctCount = finalAnswers.filter(a => a.is_correct).length;
     const score = questions.length > 0 ? (correctCount / questions.length) * 100 : 0;
-    
+
     let predictedLevel = 5;
     if (score >= 90) predictedLevel = 10;
     else if (score >= 80) predictedLevel = 8;
@@ -340,7 +342,7 @@ export default function TestPage() {
     else if (score >= 40) predictedLevel = 4;
     else if (score >= 30) predictedLevel = 3;
     else predictedLevel = 2;
-    
+
     // Topic statistics
     const topicResults: Record<string, { correct: number; total: number; totalTime: number }> = {};
     finalAnswers.forEach((answer) => {
@@ -356,7 +358,7 @@ export default function TestPage() {
         }
       }
     });
-    
+
     // Difficulty statistics
     const difficultyResults: Record<string, { correct: number; total: number }> = {
       "Амархан": { correct: 0, total: 0 },
@@ -373,11 +375,11 @@ export default function TestPage() {
         }
       }
     });
-    
+
     const weakTopics = Object.entries(topicResults)
       .filter(([_, stats]) => stats.total > 0 && stats.correct / stats.total < 0.5)
       .map(([topic]) => topic);
-    
+
     // Calculate topic stats with percentage
     const topic_stats: Record<string, { correct: number; total: number; percentage: number }> = {};
     Object.entries(topicResults).forEach(([topic, stats]) => {
@@ -387,7 +389,7 @@ export default function TestPage() {
         percentage: stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0
       };
     });
-    
+
     // Calculate difficulty stats with percentage
     const difficulty_stats: Record<string, { correct: number; total: number; percentage: number }> = {};
     Object.entries(difficultyResults).forEach(([diff, stats]) => {
@@ -397,11 +399,11 @@ export default function TestPage() {
         percentage: stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0
       };
     });
-    
+
     // Average time per question
     const totalTime = finalAnswers.reduce((sum, a) => sum + a.time_spent, 0);
     const avg_time_per_question = finalAnswers.length > 0 ? Math.round(totalTime / finalAnswers.length) : 0;
-    
+
     // Fastest and slowest topics
     let fastest_topic = "";
     let slowest_topic = "";
@@ -420,7 +422,7 @@ export default function TestPage() {
         }
       }
     });
-    
+
     setResult({
       score,
       total_questions: questions.length,
@@ -435,14 +437,67 @@ export default function TestPage() {
     });
   };
 
-  const handleFinishTest = () => {
+  const submitTestToBackend = async (finalAnswers: Answer[]) => {
+    try {
+      const token = (session as any)?.accessToken;
+
+      // Format answers for backend
+      const formattedAnswers = finalAnswers.map(a => ({
+        question_id: a.question_id,
+        answer: a.answer,
+        time_spent: a.time_spent
+      }));
+
+      // Submit test to backend
+      const submitRes = await fetch(`${API_URL}/api/tests/submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { "Authorization": `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ answers: formattedAnswers })
+      });
+
+      if (submitRes.ok) {
+        const backendResult = await submitRes.json();
+        console.log("Backend result:", backendResult);
+
+        // Generate roadmap after test
+        const roadmapRes = await fetch(`${API_URL}/api/roadmap/generate`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { "Authorization": `Bearer ${token}` } : {})
+          }
+        });
+
+        if (roadmapRes.ok) {
+          console.log("Roadmap generated successfully");
+        }
+
+        return backendResult;
+      }
+    } catch (error) {
+      console.error("Failed to submit test to backend:", error);
+    }
+    return null;
+  };
+
+  const handleFinishTest = async () => {
     saveCurrentAnswer();
-    
-    setTimeout(() => {
+    setLoading(true);
+
+    setTimeout(async () => {
       setAnswers((currentAnswers) => {
+        // Calculate local result first
         calculateResult(currentAnswers);
+
+        // Submit to backend (async, don't wait)
+        submitTestToBackend(currentAnswers);
+
         return currentAnswers;
       });
+      setLoading(false);
       setTestFinished(true);
     }, 100);
   };
@@ -464,7 +519,7 @@ export default function TestPage() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <Sidebar />
-        <main className="lg:ml-72 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8">
+        <main className={`p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8 transition-all duration-300 ${collapsed ? 'lg:ml-20' : 'lg:ml-72'}`}>
           <div className="max-w-4xl mx-auto">
             {/* Header */}
             <div className="text-center mb-8">
@@ -482,13 +537,12 @@ export default function TestPage() {
             {/* Test Mode Cards */}
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               {/* Quick Test */}
-              <div 
+              <div
                 onClick={() => handleSelectMode("quick")}
-                className={`cursor-pointer p-6 rounded-2xl border-2 transition-all ${
-                  testMode === "quick" 
-                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30" 
-                    : "border-gray-200 dark:border-gray-700 hover:border-blue-300 bg-white dark:bg-gray-800"
-                }`}
+                className={`cursor-pointer p-6 rounded-2xl border-2 transition-all ${testMode === "quick"
+                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30"
+                  : "border-gray-200 dark:border-gray-700 hover:border-blue-300 bg-white dark:bg-gray-800"
+                  }`}
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
@@ -499,7 +553,7 @@ export default function TestPage() {
                     <p className="text-sm text-gray-500 dark:text-gray-400">Хурдан үнэлгээ авах</p>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-3 gap-3 mb-4">
                   <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg text-center">
                     <p className="text-lg font-bold text-blue-600">10</p>
@@ -514,7 +568,7 @@ export default function TestPage() {
                     <p className="text-xs text-gray-500 dark:text-gray-400">Сэдэв</p>
                   </div>
                 </div>
-                
+
                 <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
@@ -528,18 +582,17 @@ export default function TestPage() {
               </div>
 
               {/* Full Test */}
-              <div 
+              <div
                 onClick={() => handleSelectMode("full")}
-                className={`cursor-pointer p-6 rounded-2xl border-2 transition-all relative overflow-hidden ${
-                  testMode === "full" 
-                    ? "border-purple-500 bg-purple-50 dark:bg-purple-900/30" 
-                    : "border-gray-200 dark:border-gray-700 hover:border-purple-300 bg-white dark:bg-gray-800"
-                }`}
+                className={`cursor-pointer p-6 rounded-2xl border-2 transition-all relative overflow-hidden ${testMode === "full"
+                  ? "border-purple-500 bg-purple-50 dark:bg-purple-900/30"
+                  : "border-gray-200 dark:border-gray-700 hover:border-purple-300 bg-white dark:bg-gray-800"
+                  }`}
               >
                 <div className="absolute top-3 right-3">
                   <Badge variant="purple" className="text-xs">Санал болгох</Badge>
                 </div>
-                
+
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center">
                     <GraduationCap className="w-7 h-7 text-white" />
@@ -549,7 +602,7 @@ export default function TestPage() {
                     <p className="text-sm text-gray-500 dark:text-gray-400">Нарийвчилсан дүгнэлт</p>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-3 gap-3 mb-4">
                   <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg text-center">
                     <p className="text-lg font-bold text-blue-600">30</p>
@@ -564,7 +617,7 @@ export default function TestPage() {
                     <p className="text-xs text-gray-500 dark:text-gray-400">Сэдэв</p>
                   </div>
                 </div>
-                
+
                 <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
@@ -588,14 +641,13 @@ export default function TestPage() {
 
             {/* Start Button */}
             <div className="text-center">
-              <button 
+              <button
                 onClick={handleStartTest}
                 disabled={!testMode}
-                className={`px-10 py-4 font-medium rounded-xl transition-all text-lg ${
-                  testMode 
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl" 
-                    : "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
-                }`}
+                className={`px-10 py-4 font-medium rounded-xl transition-all text-lg ${testMode
+                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
+                  }`}
               >
                 {testMode ? `${testModes[testMode].title} эхлүүлэх` : "Тестийн төрөл сонгоно уу"}
               </button>
@@ -609,22 +661,21 @@ export default function TestPage() {
   // Result screen
   if (testFinished && result) {
     const isFullTest = testMode === "full";
-    
+
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <Sidebar />
-        <main className="lg:ml-72 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8">
+        <main className={`p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8 transition-all duration-300 ${collapsed ? 'lg:ml-20' : 'lg:ml-72'}`}>
           <div className={`mx-auto ${isFullTest ? "max-w-5xl" : "max-w-2xl"}`}>
             {/* Header Card */}
             <Card className="mb-6">
               <CardContent className="py-8 text-center">
-                <div className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 ${
-                  result.score >= 70 
-                    ? "bg-green-100 dark:bg-green-900/50" 
-                    : result.score >= 50 
+                <div className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 ${result.score >= 70
+                  ? "bg-green-100 dark:bg-green-900/50"
+                  : result.score >= 50
                     ? "bg-yellow-100 dark:bg-yellow-900/50"
                     : "bg-red-100 dark:bg-red-900/50"
-                }`}>
+                  }`}>
                   {result.score >= 70 ? (
                     <Trophy className="w-12 h-12 text-green-600" />
                   ) : result.score >= 50 ? (
@@ -633,14 +684,14 @@ export default function TestPage() {
                     <AlertTriangle className="w-12 h-12 text-red-600" />
                   )}
                 </div>
-                
+
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
                   {isFullTest ? "Бүрэн тест дууслаа!" : "Түргэн тест дууслаа!"}
                 </h1>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                   {result.score >= 70 ? "Маш сайн байна!" : result.score >= 50 ? "Дунд зэрэг" : "Дадлага хийх шаардлагатай"}
                 </p>
-                
+
                 {/* Main Stats */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto">
                   <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl">
@@ -680,19 +731,17 @@ export default function TestPage() {
                         <div key={topic}>
                           <div className="flex justify-between text-sm mb-1">
                             <span className="font-medium text-gray-700 dark:text-gray-300">{topic}</span>
-                            <span className={`font-bold ${
-                              stats.percentage >= 70 ? "text-green-600" : 
+                            <span className={`font-bold ${stats.percentage >= 70 ? "text-green-600" :
                               stats.percentage >= 50 ? "text-yellow-600" : "text-red-600"
-                            }`}>
+                              }`}>
                               {stats.correct}/{stats.total} ({stats.percentage}%)
                             </span>
                           </div>
                           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                            <div 
-                              className={`h-2 rounded-full transition-all ${
-                                stats.percentage >= 70 ? "bg-green-500" : 
+                            <div
+                              className={`h-2 rounded-full transition-all ${stats.percentage >= 70 ? "bg-green-500" :
                                 stats.percentage >= 50 ? "bg-yellow-500" : "bg-red-500"
-                              }`}
+                                }`}
                               style={{ width: `${stats.percentage}%` }}
                             />
                           </div>
@@ -720,10 +769,9 @@ export default function TestPage() {
                             </Badge>
                           </div>
                           <div className="text-right">
-                            <p className={`text-lg font-bold ${
-                              stats.percentage >= 70 ? "text-green-600" : 
+                            <p className={`text-lg font-bold ${stats.percentage >= 70 ? "text-green-600" :
                               stats.percentage >= 50 ? "text-yellow-600" : "text-red-600"
-                            }`}>
+                              }`}>
                               {stats.percentage}%
                             </p>
                             <p className="text-xs text-gray-500">{stats.correct}/{stats.total} зөв</p>
@@ -752,7 +800,7 @@ export default function TestPage() {
                           Дундаж хугацаа / асуулт
                         </p>
                       </div>
-                      
+
                       <div className="grid grid-cols-2 gap-3">
                         <div className="p-3 bg-green-50 dark:bg-green-900/30 rounded-xl text-center">
                           <Zap className="w-5 h-5 text-green-600 mx-auto mb-1" />
@@ -803,7 +851,7 @@ export default function TestPage() {
                 </Card>
               </div>
             )}
-            
+
             {/* Simple weak topics for quick test */}
             {!isFullTest && result.weak_topics.length > 0 && (
               <Card className="mb-6">
@@ -871,7 +919,7 @@ export default function TestPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
 
-      <main className="lg:ml-72 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8">
+      <main className={`p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8 transition-all duration-300 ${collapsed ? 'lg:ml-20' : 'lg:ml-72'}`}>
         {/* Test Header */}
         <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-3 sm:p-4 mb-4 sm:mb-6 lg:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
@@ -894,9 +942,8 @@ export default function TestPage() {
                 </span>
               </div>
 
-              <div className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl ${
-                timeRemaining < 300 ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-600"
-              }`}>
+              <div className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl ${timeRemaining < 300 ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-600"
+                }`}>
                 <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="font-bold font-mono text-sm sm:text-base">{formatTime(timeRemaining)}</span>
               </div>
@@ -926,21 +973,19 @@ export default function TestPage() {
                   {currentQuestion.options.map((option, i) => {
                     const isSelected = selectedAnswer === i;
                     const optionLetter = String.fromCharCode(65 + i);
-                    
+
                     return (
                       <button
                         key={i}
                         onClick={() => handleSelectAnswer(i)}
-                        className={`w-full p-4 rounded-xl text-left transition-all border-2 ${
-                          isSelected 
-                            ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30" 
-                            : "border-gray-200 dark:border-gray-700 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30"
-                        }`}
+                        className={`w-full p-4 rounded-xl text-left transition-all border-2 ${isSelected
+                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30"
+                          : "border-gray-200 dark:border-gray-700 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+                          }`}
                       >
                         <div className="flex items-center gap-4">
-                          <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${
-                            isSelected ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
-                          }`}>
+                          <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${isSelected ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                            }`}>
                             {optionLetter}
                           </span>
                           <span className="font-medium text-gray-900 dark:text-white">{option}</span>
@@ -952,8 +997,8 @@ export default function TestPage() {
 
                 {/* Actions */}
                 <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     leftIcon={<ChevronLeft className="w-4 h-4" />}
                     onClick={handlePrevQuestion}
                     disabled={currentIndex === 0}
@@ -962,16 +1007,16 @@ export default function TestPage() {
                   </Button>
 
                   <div className="flex gap-3">
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       leftIcon={<Flag className={`w-4 h-4 ${flagged.includes(currentIndex) ? "text-orange-500" : ""}`} />}
                       onClick={handleToggleFlag}
                     >
                       {flagged.includes(currentIndex) ? "Болих" : "Тэмдэглэх"}
                     </Button>
-                    
+
                     {currentIndex < questions.length - 1 ? (
-                      <Button 
+                      <Button
                         onClick={handleNextQuestion}
                         rightIcon={<ChevronRight className="w-4 h-4" />}
                       >
@@ -1005,13 +1050,12 @@ export default function TestPage() {
                       <button
                         key={i}
                         onClick={() => handleGoToQuestion(i)}
-                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg font-medium text-xs sm:text-sm relative transition-all ${
-                          isCurrent
-                            ? "bg-blue-600 text-white"
-                            : isAnswered
+                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg font-medium text-xs sm:text-sm relative transition-all ${isCurrent
+                          ? "bg-blue-600 text-white"
+                          : isAnswered
                             ? "bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400"
                             : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                        }`}
+                          }`}
                       >
                         {i + 1}
                         {isFlagged && (

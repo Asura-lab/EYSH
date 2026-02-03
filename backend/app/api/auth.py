@@ -1,27 +1,45 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+import bcrypt
 from datetime import datetime, timedelta
 from typing import Optional
 
 from app.config import get_settings
-from app.models import UserCreate, UserResponse, Token, TokenData
+from app.models import UserCreate, UserResponse, Token, TokenData, SocialLogin
 from app.db import get_users_collection
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 settings = get_settings()
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+
+def _normalize_password(password: str) -> bytes:
+    # bcrypt has a 72-byte limit; truncate to preserve legacy behavior.
+    password_bytes = password.encode("utf-8")
+    return password_bytes[:72] if len(password_bytes) > 72 else password_bytes
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    if not hashed_password:
+        return False
+    try:
+        hashed_bytes = (
+            hashed_password.encode("utf-8")
+            if isinstance(hashed_password, str)
+            else hashed_password
+        )
+        return bcrypt.checkpw(
+            _normalize_password(plain_password),
+            hashed_bytes,
+        )
+    except ValueError:
+        return False
 
 
 def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    hashed = bcrypt.hashpw(_normalize_password(password), bcrypt.gensalt())
+    return hashed.decode("utf-8")
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
@@ -115,3 +133,46 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         profile=current_user.get("profile", {}),
         created_at=current_user["created_at"]
     )
+
+@router.post("/social-login")
+async def social_login_api(login_data: SocialLogin):
+    users_collection = get_users_collection()
+    user = await users_collection.find_one({"email": login_data.email})
+    
+    if not user:
+        new_user = {
+            "email": login_data.email,
+            "name": login_data.name,
+            "role": "student",
+            "hashed_password": "",
+            "profile": {},
+            "created_at": datetime.utcnow(),
+            "provider": login_data.provider,
+            "image": login_data.image
+        }
+        result = await users_collection.insert_one(new_user)
+        user = await users_collection.find_one({"_id": result.inserted_id})
+    else:
+        if login_data.image and user.get("image") != login_data.image:
+             await users_collection.update_one(
+                 {"email": login_data.email},
+                 {"$set": {"image": login_data.image}}
+             )
+             user["image"] = login_data.image
+    
+    # Generate Token
+    access_token = create_access_token(
+        data={"sub": str(user["_id"])},
+        expires_delta=timedelta(minutes=settings.access_token_expire_minutes)
+    )
+    
+    return {
+        "id": str(user["_id"]),
+        "email": user["email"],
+        "name": user["name"],
+        "role": user.get("role", "student"),
+        "profile": user.get("profile", {}),
+        "created_at": user["created_at"],
+        "access_token": access_token,
+        "token_type": "bearer"
+    }

@@ -1,4 +1,4 @@
-from motor.motor_asyncio import AsyncIOMotorClient
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorGridFSBucket
 from app.config import get_settings
 
 settings = get_settings()
@@ -54,3 +54,19 @@ def get_mentorships_collection():
 
 def get_mentor_profiles_collection():
     return db.db["mentor_profiles"]
+
+
+def get_topics_collection():
+    return db.db["topics"]
+
+
+def get_topic_views_collection():
+    return db.db["topic_views"]
+
+
+def get_problems_collection():
+    return db.db["problems"]
+
+
+def get_problem_images_bucket():
+    return AsyncIOMotorGridFSBucket(db.db, bucket_name="problem_images")

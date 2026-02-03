@@ -32,8 +32,14 @@ export default function ThemeToggle({ className, variant = "icon" }: ThemeToggle
 
   if (!mounted) {
     return (
-      <button className={cn("p-2 rounded-lg bg-gray-100 dark:bg-gray-800", className)}>
-        <div className="w-5 h-5" />
+      <button
+        className={cn(
+          "p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300",
+          className
+        )}
+        aria-label="Toggle theme"
+      >
+        <Moon className="w-5 h-5" />
       </button>
     );
   }

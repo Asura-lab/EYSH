@@ -8,6 +8,10 @@ from .mongodb import (
     get_roadmaps_collection,
     get_mentorships_collection,
     get_mentor_profiles_collection,
+    get_topics_collection,
+    get_topic_views_collection,
+    get_problems_collection,
+    get_problem_images_bucket,
 )
 
 __all__ = [
@@ -20,4 +24,8 @@ __all__ = [
     "get_roadmaps_collection",
     "get_mentorships_collection",
     "get_mentor_profiles_collection",
+    "get_topics_collection",
+    "get_topic_views_collection",
+    "get_problems_collection",
+    "get_problem_images_bucket",
 ]

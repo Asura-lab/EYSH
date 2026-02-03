@@ -21,6 +21,7 @@ class UserBase(BaseModel):
     email: EmailStr
     name: str
     role: Literal["student", "mentor", "admin"] = "student"
+    is_active: bool = True
 
 
 class UserCreate(UserBase):
@@ -32,6 +33,19 @@ class UserProfile(BaseModel):
     target_university: Optional[str] = None
     target_score: Optional[int] = None
     subjects: List[str] = []
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    role: Optional[Literal["student", "mentor", "admin"]] = None
+    is_active: Optional[bool] = None
+    profile: Optional[UserProfile] = None
+
+class SocialLogin(BaseModel):
+    email: EmailStr
+    name: str
+    image: Optional[str] = None
+    provider: str
+
 
 
 class UserInDB(UserBase):

@@ -22,6 +22,7 @@ import {
   CheckCircle,
   Users,
 } from "lucide-react";
+import { useSidebar } from "@/components/providers/SidebarProvider";
 
 interface Mentor {
   id: number;
@@ -105,6 +106,7 @@ const mentors: Mentor[] = [
 const subjects: string[] = ["Бүгд", "Математик", "Физик", "Хими", "Биологи", "Англи хэл", "Програмчлал"];
 
 export default function MentorsPage() {
+  const { collapsed } = useSidebar();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("Бүгд");
   const [favorites, setFavorites] = useState<number[]>([2]);
@@ -126,7 +128,7 @@ export default function MentorsPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
 
-      <main className="lg:ml-72 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8">
+      <main className={`p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8 transition-all duration-300 ${collapsed ? 'lg:ml-20' : 'lg:ml-72'}`}>
         {/* Header */}
         <div className="mb-6 lg:mb-8">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">Менторууд</h1>
@@ -151,11 +153,10 @@ export default function MentorsPage() {
                 <button
                   key={subject}
                   onClick={() => setSelectedSubject(subject)}
-                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-medium text-sm whitespace-nowrap transition ${
-                    selectedSubject === subject
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-medium text-sm whitespace-nowrap transition ${selectedSubject === subject
                       ? "bg-blue-600 text-white"
                       : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                  }`}
+                    }`}
                 >
                   {subject}
                 </button>
@@ -211,11 +212,10 @@ export default function MentorsPage() {
                 className="absolute top-4 right-4 sm:top-6 sm:right-6 p-1.5 sm:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               >
                 <Heart
-                  className={`w-4 h-4 sm:w-5 sm:h-5 ${
-                    favorites.includes(mentor.id)
+                  className={`w-4 h-4 sm:w-5 sm:h-5 ${favorites.includes(mentor.id)
                       ? "text-red-500 fill-red-500"
                       : "text-gray-400"
-                  }`}
+                    }`}
                 />
               </button>
 

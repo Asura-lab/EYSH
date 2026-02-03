@@ -195,7 +195,7 @@ export default function Home() {
         <div className="container mx-auto px-4 relative">
           <motion.div
             className="max-w-4xl mx-auto text-center"
-            initial="hidden"
+            initial={false}
             animate="visible"
             variants={staggerContainer}
           >

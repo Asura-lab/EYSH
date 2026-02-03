@@ -23,6 +23,8 @@ import {
   RefreshCw,
 } from "lucide-react";
 import Link from "next/link";
+import { useSidebar } from "@/components/providers/SidebarProvider";
+import { cachedFetch } from "@/lib/requestCache";
 
 // Interfaces
 interface UserStats {
@@ -76,7 +78,8 @@ const staggerContainer = {
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  
+  const { collapsed } = useSidebar();
+
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [weeklyProgress, setWeeklyProgress] = useState<WeeklyProgress[]>([]);
@@ -98,39 +101,63 @@ export default function DashboardPage() {
     }
   }, [status, session]);
 
-  const fetchDashboardData = async () => {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+  const fetchDashboardData = async (forceRefresh = false) => {
     setLoading(true);
 
     try {
       // Get access token from session
       const token = (session as any)?.accessToken;
-      
+
       const headers: HeadersInit = {
         "Content-Type": "application/json",
       };
-      
+
       if (token) {
         headers["Authorization"] = `Bearer ${token}`;
       }
 
-      // Fetch roadmap data
+      // Fetch roadmap data from backend
       try {
-        const roadmapRes = await fetch("/api/roadmap", { headers });
-        
+        const roadmapRes = await cachedFetch(
+          `${API_URL}/api/roadmap`,
+          { headers },
+          { force: forceRefresh }
+        );
+
         if (roadmapRes.ok) {
           const roadmapData = await roadmapRes.json();
           setRoadmap(roadmapData);
-          
+
           // Calculate stats from roadmap
           const completedWeeks = roadmapData.weeks?.filter((w: any) => w.completed).length || 0;
           const totalWeeks = roadmapData.weeks?.length || 1;
-          
+
+          // Get predicted level from test history
+          let currentLevel = "Тодорхойгүй";
+          try {
+            const historyRes = await cachedFetch(
+              `${API_URL}/api/tests/history`,
+              { headers },
+              { force: forceRefresh }
+            );
+            if (historyRes.ok) {
+              const history = await historyRes.json();
+              if (history && history.length > 0) {
+                currentLevel = `${history[0].predicted_level}`;
+              }
+            }
+          } catch (e) {
+            console.log("Could not fetch test history");
+          }
+
           setStats({
             totalHours: completedWeeks * 10,
             completedTopics: completedWeeks * 3,
-            currentLevel: roadmapData.predicted_level || "Тодорхойгүй",
+            currentLevel: currentLevel,
             goalProgress: Math.round((completedWeeks / totalWeeks) * 100),
-            streak: Math.floor(Math.random() * 14) + 1,
+            streak: 1,
           });
 
           // Extract topics from roadmap
@@ -146,31 +173,49 @@ export default function DashboardPage() {
             });
           });
           setRecentTopics(topics.slice(0, 4));
-          
+
           // Generate weekly progress for existing users
           const days = ["Да", "Мя", "Лх", "Пү", "Ба", "Бя", "Ня"];
           setWeeklyProgress(
             days.map((day) => ({
               day,
-              value: Math.floor(Math.random() * 60) + 20,
+              value: 0,
             }))
           );
         } else {
-          // No roadmap yet - user needs to take test first
+          // No roadmap yet - check if user has test history
+          let currentLevel = "Тест өгөөгүй";
+          try {
+            const historyRes = await cachedFetch(
+              `${API_URL}/api/tests/history`,
+              { headers },
+              { force: forceRefresh }
+            );
+            if (historyRes.ok) {
+              const history = await historyRes.json();
+              if (history && history.length > 0) {
+                currentLevel = `${history[0].predicted_level}`;
+              }
+            }
+          } catch (e) {
+            console.log("Could not fetch test history");
+          }
+
           setStats({
             totalHours: 0,
             completedTopics: 0,
-            currentLevel: "Тест өгөөгүй",
+            currentLevel: currentLevel,
             goalProgress: 0,
             streak: 0,
           });
           setRecentTopics([]);
-          
+
           // New users have no activity
           const days = ["Да", "Мя", "Лх", "Пү", "Ба", "Бя", "Ня"];
           setWeeklyProgress(days.map((day) => ({ day, value: 0 })));
         }
-      } catch {
+      } catch (err) {
+        console.error("API error:", err);
         // API error - set defaults
         setStats({
           totalHours: 0,
@@ -179,7 +224,7 @@ export default function DashboardPage() {
           goalProgress: 0,
           streak: 0,
         });
-        
+
         // No activity on error
         const days = ["Да", "Мя", "Лх", "Пү", "Ба", "Бя", "Ня"];
         setWeeklyProgress(days.map((day) => ({ day, value: 0 })));
@@ -215,7 +260,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
 
-      <main className="lg:ml-72 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8">
+      <main className={`p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8 transition-all duration-300 ${collapsed ? 'lg:ml-20' : 'lg:ml-72'}`}>
         <motion.div
           initial="hidden"
           animate="visible"
@@ -355,7 +400,7 @@ export default function DashboardPage() {
                     <div className="flex items-center justify-between">
                       <CardTitle>Долоо хоногийн идэвхи</CardTitle>
                       <button
-                        onClick={fetchDashboardData}
+                        onClick={() => fetchDashboardData(true)}
                         className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                       >
                         <RefreshCw className="w-4 h-4 text-gray-500" />
@@ -373,13 +418,12 @@ export default function DashboardPage() {
                           className="flex-1 flex flex-col items-center gap-2"
                         >
                           <div
-                            className={`w-full rounded-t-lg ${
-                              day.value >= 70
-                                ? "bg-green-500"
-                                : day.value >= 40
+                            className={`w-full rounded-t-lg ${day.value >= 70
+                              ? "bg-green-500"
+                              : day.value >= 40
                                 ? "bg-blue-500"
                                 : "bg-gray-300 dark:bg-gray-600"
-                            }`}
+                              }`}
                             style={{ height: "100%" }}
                           />
                           <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -465,13 +509,12 @@ export default function DashboardPage() {
                           className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
                         >
                           <div
-                            className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                              task.type === "test"
-                                ? "bg-blue-100 dark:bg-blue-900/50 text-blue-600"
-                                : task.type === "meeting"
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center ${task.type === "test"
+                              ? "bg-blue-100 dark:bg-blue-900/50 text-blue-600"
+                              : task.type === "meeting"
                                 ? "bg-purple-100 dark:bg-purple-900/50 text-purple-600"
                                 : "bg-green-100 dark:bg-green-900/50 text-green-600"
-                            }`}
+                              }`}
                           >
                             {task.type === "test" ? (
                               <BookOpen className="w-5 h-5" />

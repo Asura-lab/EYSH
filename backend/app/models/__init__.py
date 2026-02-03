@@ -1,4 +1,4 @@
-from .user import UserCreate, UserResponse, UserInDB, Token, TokenData, UserProfile
+from .user import UserCreate, UserResponse, UserInDB, Token, TokenData, UserProfile, UserUpdate, SocialLogin
 from .test import (
     QuestionBase,
     QuestionCreate,
@@ -19,6 +19,8 @@ from .mentoring import (
     MentorshipResponse,
     MentorshipInDB,
 )
+from .topic import TopicContentCreate, TopicContentInDB, TopicContentResponse
+from .problem import ProblemCreate, ProblemUpdate, ProblemInDB, ProblemResponse
 
 __all__ = [
     "UserCreate",
@@ -27,6 +29,8 @@ __all__ = [
     "Token",
     "TokenData",
     "UserProfile",
+    "UserUpdate",
+    "SocialLogin",
     "QuestionBase",
     "QuestionCreate",
     "QuestionResponse",
@@ -46,4 +50,11 @@ __all__ = [
     "MentorshipRequest",
     "MentorshipResponse",
     "MentorshipInDB",
+    "TopicContentCreate",
+    "TopicContentInDB",
+    "TopicContentResponse",
+    "ProblemCreate",
+    "ProblemUpdate",
+    "ProblemInDB",
+    "ProblemResponse",
 ]

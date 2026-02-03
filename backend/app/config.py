@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pathlib import Path
 from functools import lru_cache
 
 
@@ -10,7 +11,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
 
     class Config:
-        env_file = ".env"
+        env_file = str(Path(__file__).resolve().parents[1] / ".env")
 
 
 @lru_cache()
