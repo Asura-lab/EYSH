@@ -273,7 +273,7 @@ export default function DashboardPage() {
           >
             <div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
-                Сайн байна уу, {userName}! 👋
+                Сайн байна уу, {userName}!
               </h1>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1">
                 {roadmap

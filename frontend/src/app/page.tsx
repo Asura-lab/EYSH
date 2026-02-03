@@ -515,7 +515,7 @@ export default function Home() {
                 >
                   <Button
                     size="lg"
-                    className="bg-white text-blue-600 hover:bg-gray-100 shadow-xl"
+                    className="bg-white text-white-600 hover:bg-gray-100 shadow-xl"
                     rightIcon={<ArrowRight className="w-5 h-5" />}
                   >
                     Үнэгүй эхлэх

@@ -489,7 +489,7 @@ export default function AdminDashboard() {
             {/* Top Viewed Topics */}
             <Card className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                🔥 Хамгийн их үзсэн хичээлүүд
+                Хамгийн их үзсэн хичээлүүд
               </h3>
               {topicViews.length > 0 ? (
                 <div className="overflow-x-auto">
@@ -532,7 +532,7 @@ export default function AdminDashboard() {
             {/* Suggested Topics to Add */}
             <Card className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                💡 Нэмэхийг санал болгож буй хичээлүүд
+                Нэмэхийг санал болгож буй хичээлүүд
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Хэрэглэгчид хайсан боловч системд байхгүй хичээлүүд
@@ -558,7 +558,7 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 <div className="text-center py-8 text-gray-500">
-                  <p>🎉 Бүх хичээлүүд хэрэглэгчдийн хэрэгцээг хангаж байна!</p>
+                  <p>Бүх хичээлүүд хэрэглэгчдийн хэрэгцээг хангаж байна!</p>
                 </div>
               )}
             </Card>
