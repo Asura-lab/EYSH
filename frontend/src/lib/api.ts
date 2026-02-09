@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from "axios";
+import { getSession } from "next-auth/react";
 import { cachedAxiosGet } from "@/lib/requestCache";
 
 interface RegisterData {
@@ -8,9 +9,9 @@ interface RegisterData {
 }
 
 interface TestAnswer {
-  questionId: string;
-  answer: string;
-  timeSpent: number;
+  question_id: string;
+  answer: number;
+  time_spent: number;
 }
 
 interface SubmitTestData {
@@ -21,28 +22,38 @@ interface User {
   id: string;
   email: string;
   name: string;
+  role: string;
 }
 
 interface AuthResponse {
-  token: string;
-  user: User;
+  access_token: string;
+  token_type: string;
+  user?: User;
 }
 
 interface Question {
   id: string;
   subject: string;
   topic: string;
-  difficulty: string;
-  question: string;
-  options: { id: string; text: string }[];
+  topic_mn?: string;
+  difficulty: number;
+  content: string;
+  options: string[];
+  correct_answer?: number;
+  explanation?: string;
 }
 
-interface TestHistory {
+export interface TestResult {
   id: string;
-  date: string;
   score: number;
-  subject: string;
+  total_questions: number;
+  correct_count: number;
+  predicted_level: number;
+  weak_topics: string[];
+  completed_at: string;
 }
+
+interface TestHistory extends TestResult { }
 
 interface Roadmap {
   id: string;
@@ -58,10 +69,25 @@ interface RoadmapWeek {
 
 interface Mentor {
   id: string;
-  name: string;
+  user_id: string;
+  user_name: string;
   university: string;
+  major: string;
   subjects: string[];
   rating: number;
+  bio?: string;
+  experience?: string;
+}
+
+export interface MentorshipResponse {
+  id: string;
+  student_id: string;
+  student_name: string;
+  mentor_id: string;
+  mentor_name: string;
+  subjects: string[];
+  status: "pending" | "active" | "completed" | "cancelled";
+  created_at: string;
 }
 
 const API_URL: string = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -73,11 +99,30 @@ export const api: AxiosInstance = axios.create({
   },
 });
 
+// Request Interceptor for Authentication
+api.interceptors.request.use(async (config) => {
+  if (typeof window !== "undefined") {
+    const session = await getSession();
+    if (session?.accessToken) {
+      config.headers.Authorization = `Bearer ${session.accessToken}`;
+    }
+  }
+  return config;
+});
+
 // Auth API
 export const authAPI = {
-  login: (email: string, password: string): Promise<AxiosResponse<AuthResponse>> =>
-    api.post("/api/auth/login", { email, password }),
-  register: (data: RegisterData): Promise<AxiosResponse<AuthResponse>> =>
+  login: (email: string, password: string): Promise<AxiosResponse<AuthResponse>> => {
+    const params = new URLSearchParams();
+    params.append("username", email);
+    params.append("password", password);
+    return api.post("/api/auth/login", params, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+  },
+  register: (data: RegisterData): Promise<AxiosResponse<User>> =>
     api.post("/api/auth/register", data),
   me: (): Promise<AxiosResponse<User>> => cachedAxiosGet<User>(api, "/api/auth/me"),
 };
@@ -86,7 +131,7 @@ export const authAPI = {
 export const testAPI = {
   getQuestions: (subject: string, count: number): Promise<AxiosResponse<Question[]>> =>
     api.get(`/api/tests/questions?subject=${subject}&count=${count}`),
-  submitTest: (data: SubmitTestData): Promise<AxiosResponse<{ score: number; level: string }>> =>
+  submitTest: (data: SubmitTestData): Promise<AxiosResponse<TestResult>> =>
     api.post("/api/tests/submit", data),
   getHistory: (): Promise<AxiosResponse<TestHistory[]>> => cachedAxiosGet<TestHistory[]>(api, "/api/tests/history"),
 };
@@ -103,15 +148,15 @@ export const roadmapAPI = {
 export const mentoringAPI = {
   getMentors: (subject?: string): Promise<AxiosResponse<Mentor[]>> =>
     cachedAxiosGet<Mentor[]>(api, `/api/mentoring/mentors${subject ? `?subject=${subject}` : ""}`),
-  requestMentor: (mentorId: string): Promise<AxiosResponse<{ success: boolean }>> =>
-    api.post(`/api/mentoring/request/${mentorId}`),
-  getMyMentor: (): Promise<AxiosResponse<Mentor | null>> =>
-    cachedAxiosGet<Mentor | null>(api, "/api/mentoring/my-mentor"),
+  requestMentor: (mentorId: string, data: { subjects: string[], message?: string }): Promise<AxiosResponse<MentorshipResponse>> =>
+    api.post(`/api/mentoring/request/${mentorId}`, data),
+  getMyMentor: (): Promise<AxiosResponse<MentorshipResponse | null>> =>
+    cachedAxiosGet<MentorshipResponse | null>(api, "/api/mentoring/my-mentor"),
 };
 
 // Topic Content API
 export interface TopicContent {
-  _id: string;
+  id: string;
   topic: string;
   title: string;
   youtube_id: string;

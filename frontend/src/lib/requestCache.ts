@@ -1,6 +1,6 @@
-import type { AxiosResponse } from "axios";
+import type { AxiosResponse, AxiosRequestConfig } from "axios";
 
-const CACHE_PREFIX = "eysh_cache:";
+const CACHE_PREFIX = "Studium_cache:";
 const DEFAULT_TTL_MS = 5 * 60 * 1000;
 let clearedOnReload = false;
 
@@ -126,9 +126,9 @@ export const cachedFetch = async (
 };
 
 export const cachedAxiosGet = async <T,>(
-  client: { get: (url: string, config?: any) => Promise<AxiosResponse<T>> },
+  client: { get: (url: string, config?: AxiosRequestConfig) => Promise<AxiosResponse<T>> },
   url: string,
-  config?: { params?: any; headers?: Record<string, string> },
+  config?: AxiosRequestConfig,
   options: { ttlMs?: number; force?: boolean } = {}
 ): Promise<AxiosResponse<T>> => {
   const ttlMs = options.ttlMs ?? DEFAULT_TTL_MS;
@@ -138,7 +138,8 @@ export const cachedAxiosGet = async <T,>(
 
   clearCacheOnReload();
 
-  const auth = config?.headers?.Authorization || config?.headers?.authorization || null;
+  const headers = config?.headers as any;
+  const auth = headers?.Authorization || headers?.authorization || null;
   const key = buildCacheKey(url, "GET", config?.params, auth);
 
   if (!options.force) {

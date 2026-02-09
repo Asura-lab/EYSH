@@ -118,7 +118,7 @@ export default function RegisterPage(): JSX.Element {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 flex">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 flex">
       {/* Left Panel */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 p-12 flex-col justify-between relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-10" />
@@ -127,7 +127,7 @@ export default function RegisterPage(): JSX.Element {
             <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
               <GraduationCap className="w-7 h-7 text-white" />
             </div>
-            <span className="text-2xl font-bold text-white">EYSH</span>
+            <span className="text-2xl font-bold text-white">Studium</span>
           </Link>
         </div>
 
@@ -147,7 +147,7 @@ export default function RegisterPage(): JSX.Element {
 
         <div className="relative">
           <p className="text-blue-200 text-sm">
-            © 2026 EYSH. Бүх эрх хуулиар хамгаалагдсан.
+            © 2026 Studium. Бүх эрх хуулиар хамгаалагдсан.
           </p>
         </div>
       </div>
@@ -162,7 +162,7 @@ export default function RegisterPage(): JSX.Element {
                 <GraduationCap className="w-7 h-7 text-white" />
               </div>
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                EYSH
+                Studium
               </span>
             </Link>
           </div>

@@ -1,5 +1,5 @@
 """
-EYSH - ML Model Training Script
+Studium - ML Model Training Script
 Элсэлтийн ерөнхий шалгалтын бэлтгэл системийн ML моделүүд
 """
 
@@ -17,7 +17,7 @@ import os
 os.makedirs('../trained_models', exist_ok=True)
 
 print("=" * 60)
-print("EYSH ML Model Training")
+print("Studium ML Model Training")
 print("=" * 60)
 
 # ============================================================

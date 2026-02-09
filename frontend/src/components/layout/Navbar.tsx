@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { 
-  GraduationCap, 
-  Menu, 
-  X, 
+import {
+  GraduationCap,
+  Menu,
+  X,
   User,
   LogOut,
   Settings,
@@ -37,7 +37,7 @@ export default function Navbar(): JSX.Element {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false);
-  
+
   // TODO: Replace with actual auth state
   const isLoggedIn: boolean = false;
   const user: UserData = { name: "Батбаяр", email: "batbayar@example.com" };
@@ -52,7 +52,7 @@ export default function Navbar(): JSX.Element {
               <GraduationCap className="w-6 h-6 text-white" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              EYSH
+              Studium
             </span>
           </Link>
 

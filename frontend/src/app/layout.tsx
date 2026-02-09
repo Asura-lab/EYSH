@@ -8,7 +8,7 @@ import { SidebarProvider } from "@/components/providers/SidebarProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "EYSH - Элсэлтийн Шалгалтанд Бэлдэх",
+  title: "Studium - Элсэлтийн Шалгалтанд Бэлдэх",
   description: "Сурагчдад зориулсан элсэлтийн шалгалтанд бэлдэх үнэгүй систем",
 };
 
@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="mn" suppressHydrationWarning>
-      <body className={`${inter.className} bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors`}>
+      <body className={`${inter.className} transition-colors`}>
         <AuthProvider>
           <ThemeProvider>
             <SidebarProvider>

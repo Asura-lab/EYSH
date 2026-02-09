@@ -1,11 +1,11 @@
-# EYSH - Элсэлтийн Шалгалтанд Бэлдэх Систем
+# Studium - Элсэлтийн Шалгалтанд Бэлдэх Систем
 
 Сурагчдын түвшинг тодорхойлж, сул талыг олж, хувь хүнд тохирсон сургалтын roadmap үүсгэх + Mentor холболтын систем.
 
 ## Төслийн Бүтэц
 
 ```
-EYSH/
+Studium/
 ├── frontend/          # Next.js (TypeScript, Tailwind CSS)
 ├── backend/           # FastAPI (Python)
 ├── ml/                # Machine Learning

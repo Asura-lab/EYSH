@@ -125,7 +125,7 @@ export default function Sidebar({ collapsed: controlledCollapsed, onCollapsedCha
             <GraduationCap className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-            EYSH
+            Studium
           </span>
         </Link>
         <button
@@ -168,7 +168,7 @@ export default function Sidebar({ collapsed: controlledCollapsed, onCollapsedCha
             </div>
             {!collapsed && (
               <div>
-                <span className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">EYSH</span>
+                <span className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Studium</span>
                 <p className="text-[10px] text-gray-500 dark:text-slate-400 -mt-0.5">Элсэлтийн шалгалт</p>
               </div>
             )}

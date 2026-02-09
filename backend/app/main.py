@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
     # Create default admin user
     try:
         users = get_users_collection()
-        admin_email = "admin@eysh.mn"
+        admin_email = "admin@Studium.mn"
         existing_admin = await users.find_one({"email": admin_email})
         
         if not existing_admin:
@@ -45,7 +45,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="EYSH API",
+    title="Studium API",
     description="Элсэлтийн Шалгалтанд Бэлдэх Систем",
     version="0.1.0",
     lifespan=lifespan
@@ -72,7 +72,7 @@ app.include_router(problems_router)
 
 @app.get("/")
 async def root():
-    return {"message": "EYSH API", "version": "0.1.0"}
+    return {"message": "Studium API", "version": "0.1.0"}
 
 
 @app.get("/health")

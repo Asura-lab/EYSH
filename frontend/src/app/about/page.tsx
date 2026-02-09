@@ -1,7 +1,7 @@
 'use client';
 
 import { Navbar, Footer } from "@/components/layout";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Users, Target, Zap, Heart, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,7 +30,7 @@ const BackgroundBlob = ({ className, animate }: { className: string, animate?: a
 
 export default function AboutPage() {
   // Animation Variants (Fixed easing values and types)
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -38,35 +38,35 @@ export default function AboutPage() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { duration: 0.8, ease: "easeOut" } 
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" }
     },
   };
 
-  const fadeInUp = {
+  const fadeInUp: Variants = {
     hidden: { opacity: 0, y: 60 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { duration: 0.6, ease: "easeOut" } 
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
     },
   };
 
-  const staggerContainer = {
+  const staggerContainer: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
   };
 
-  const scaleIn = {
+  const scaleIn: Variants = {
     hidden: { opacity: 0, scale: 0.9 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
-      transition: { duration: 0.5, ease: "easeOut" } 
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.5, ease: "easeOut" }
     },
   };
 
@@ -74,54 +74,54 @@ export default function AboutPage() {
   const values = [
     {
       icon: Target,
-      title: "Зорилго Чиглэсэн",
-      description: "Бид YESH монгол шалгалтанд сууж байгаа оюутнуудыг амжилтанд хүрэхэд туслах шийдэлд анхаарч байна.",
+      title: "Зорилго Төвтэй",
+      description: "Сурагч бүрийн элсэлтийн зорилгод хүрэхэд туслах хамгийн оновчтой, үр дүнтэй шийдлийг бүтээж байна.",
     },
     {
       icon: Zap,
-      title: "Хиймэл Оюуны Хүч",
-      description: "Дэвшилтэт AI технологи ашиглан хувь хүний сургалтын туршлага үзүүлэлтийг төгөвлөөд байна.",
+      title: "Дэвшилтэт Технологи",
+      description: "Machine Learning, AI алгоритм ашиглан сурагч бүрийн түвшинд тохирсон сургалтын төлөвлөгөө боловсруулдаг.",
     },
     {
       icon: Users,
-      title: "Сурагч Төвтэй",
-      description: "Оюутны сургалтын хэрэгцээ, түвшинг ойлгон ер бусын арга замаар сургалт явуулдаг.",
+      title: "Хүртээмжтэй Боловсрол",
+      description: "Газар зүй, эдийн засгийн боломжоос үл хамааралгүй сурагч бүрд чанартай бэлтгэл хийх боломжийг олгодог.",
     },
     {
       icon: Heart,
-      title: "Дадлагад суурилсан",
-      description: "Дадлага дасгал ажиллуудаар таньд тохируулан бодлого хариу, зааварчилгаа өгөх болно.",
+      title: "Тасралтгүй Сайжруулалт",
+      description: "Хэрэглэгчдийн санал хүсэлт, шинжлэх ухааны сүүлийн үр дүнд тулгуурлан системээ байнга сайжруулдаг.",
     },
   ];
 
   const team = [
     {
-      name: "Баясгалан Төгөс",
-      role: "Үндэслэгч & Гүйцэтгэл Захирал",
-      bio: "Монгол хэл, боловсрол салбарт 12 жилийн туршлагатай. YESH шалгалтанд өндөр дүн авсан.",
+      name: "Мөнхдорж",
+      role: "Fullstack Хөгжүүлэгч & Tech Lead",
+      bio: "2+ жилийн вэб хөгжүүлэлтийн туршлагатай. Системийн архитектур, AI интеграци, DevOps хариуцсан.",
     },
     {
-      name: "Өлзий Мөнхоо",
-      role: "AI Анализатор",
-      bio: "Хиймэл оюуны мэргэжилтэн. Сургалтын системийн үр ашгийг сайжруулахад ажиллаж байна.",
+      name: "Мягмарсүрэн",
+      role: "Frontend & UX Хөгжүүлэгч",
+      bio: "Хэрэглэгчийн туршлагыг дээд зэрэгт үнэлдэг. React, Next.js, Tailwind CSS дээр мэргэшсэн.",
     },
     {
-      name: "Хүүхэлдэй Цэцэг",
-      role: "Сургалтын Үйлчилгээ Захирал",
-      bio: "Монгол хэлийн багш. Оюутнуудын сургалтанд өндөр үнэлэмжийн арга замыг хэрэгжүүлдэг.",
+      name: "Тамир",
+      role: "AI/ML Инженер",
+      bio: "Хиймэл оюун ухаан, машин сургалтын чиглэлээр төгссөн. Түвшин тодорхойлох алгоритм боловсруулсан.",
     },
     {
-      name: "Энхжаргал Сүхбаатар",
-      role: "Техникийн Найман Захирал",
-      bio: "Бүх системийн хөгжүүлэлт болон сайжруулалтанд эрхэмтэйгээр ажилладаг.",
+      name: "Эрдэнэбаяр",
+      role: "Backend Хөгжүүлэгч",
+      bio: "Python, FastAPI, Өгөгдлийн сан дээр мэргэшсэн. API-ийн бүтэц, аюулгүй байдал хариуцсан.",
     },
   ];
 
   const stats: Stat[] = [
-    { value: "5,000", suffix: "+", label: "Сурагчид" },
-    { value: "500", suffix: "+", label: "Менторууд" },
-    { value: "95", suffix: "%", label: "Элсэлтийн хувь" },
-    { value: "4.9", label: "Үнэлгээ" },
+    { value: "10,000", suffix: "+", label: "Идэвхтэй сурагчид" },
+    { value: "800", suffix: "+", label: "Туршлагатай менторууд" },
+    { value: "92", suffix: "%", label: "Амжилттай элссэн" },
+    { value: "4.8", suffix: "/5", label: "Хэрэглэгчийн үнэлгээ" },
   ];
 
   return (
@@ -129,57 +129,61 @@ export default function AboutPage() {
       <Navbar />
 
       {/* ================= HERO SECTION ================= */}
-      <motion.section
-        className="relative pt-28 sm:pt-32 lg:pt-40 pb-20 sm:pb-24 lg:pb-32 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 dark:from-gray-950 dark:via-gray-900 dark:to-black overflow-hidden"
-        initial="hidden"
-        animate="visible"
-        variants={staggerContainer}
-      >
-        {/* Animated Background Elements (Eyecatching) */}
+      <section className="pt-24 sm:pt-28 lg:pt-32 pb-12 sm:pb-16 lg:pb-20 bg-gradient-to-br from-indigo-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 overflow-hidden relative">
+        {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <BackgroundBlob
-            className="top-20 left-10 w-64 sm:w-96 h-64 sm:h-96 bg-blue-600/20 z-10"
-            animate={{ x: [0, 50, 0], y: [0, 30, 0], scale: [1, 1.1, 1] }}
+          <motion.div
+            className="absolute top-20 left-10 w-48 sm:w-72 h-48 sm:h-72 bg-blue-400/20 dark:bg-blue-600/20 rounded-full blur-3xl"
+            animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           />
-          <BackgroundBlob
-            className="bottom-20 right-10 w-72 sm:w-[30rem] h-72 sm:h-[30rem] bg-purple-600/20 z-10"
-            animate={{ x: [0, -30, 0], y: [0, -50, 0], scale: [1, 1.2, 1] }}
+          <motion.div
+            className="absolute bottom-20 right-10 w-64 sm:w-96 h-64 sm:h-96 bg-purple-400/20 dark:bg-purple-600/20 rounded-full blur-3xl"
+            animate={{ x: [0, -30, 0], y: [0, -50, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           />
-           <BackgroundBlob
-            className="top-1/3 right-1/4 w-48 sm:w-64 h-48 sm:h-64 bg-pink-500/15 z-10"
-            animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+          <motion.div
+            className="absolute top-40 right-1/4 w-48 sm:w-64 h-48 sm:h-64 bg-pink-400/10 dark:bg-pink-500/15 rounded-full blur-3xl"
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           />
         </div>
 
-        {/* Subtle Grid Texture (Trustworthy) */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] pointer-events-none" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.05] dark:opacity-5 pointer-events-none" />
 
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div className="max-w-4xl mx-auto text-center" variants={staggerContainer}>
+        <div className="container mx-auto px-4 relative">
+          <motion.div
+            className="max-w-4xl mx-auto text-center"
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+          >
             <motion.h1
               variants={fadeInUp}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-8 leading-tight tracking-tight"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 leading-tight"
             >
-              Бидний Тухай
+              Бидний тухай
               <motion.span
-                className="block mt-2 bg-gradient-to-r  from-blue-600 via-indigo-400 to-purple-400 bg-clip-text text-transparent"
-                animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
-                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                style={{ backgroundSize: "200% auto" }}
+                className="block bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
+                animate={{
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                }}
+                transition={{ duration: 5, repeat: Infinity }}
+                style={{ backgroundSize: "200% 200%" }}
               >
-                ЭЕШ Сургалтын Платформ
+                Studium сургалтын платформ
               </motion.span>
             </motion.h1>
 
             <motion.p
               variants={fadeInUp}
-              className="text-lg sm:text-xl text-gray-200 mb-12 max-w-2xl mx-auto leading-relaxed font-medium"
+              className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-10 max-w-2xl mx-auto px-4"
             >
-              ЭЕШ шалгалтанд тань амжилтад хүрэхэд туслах хиймэл оюуны сургагч системийг бий болгосон. Мэргэжилтэй баг, дэвшилтэт технологи, шилдэг аргачлалаар таныг бэлтгэнэ.
+              ЭЕШ-д амжилт гаргахад тань туслах хиймэл оюуны ухаалаг сургалтын системийг бий болгосон. Мэргэжлийн баг, дэвшилтэт технологи, оновчтой аргачлалаар таныг бэлтгэнэ.
             </motion.p>
           </motion.div>
         </div>
-        </motion.section>
+      </section>
 
       {/* ================= OUR STORY SECTION ================= */}
       <motion.section
@@ -191,23 +195,23 @@ export default function AboutPage() {
       >
         {/* NEW: Subtle static background blobs for depth in light sections */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <BackgroundBlob className="top-1/4 -left-24 w-[500px] h-[500px] bg-blue-100/60 dark:bg-blue-900/20 blur-3xl" />
-            <BackgroundBlob className="bottom-0 right-0 w-[400px] h-[400px] bg-purple-100/50 dark:bg-purple-900/20 blur-3xl" />
+          <BackgroundBlob className="top-1/4 -left-24 w-[500px] h-[500px] bg-blue-100/60 dark:bg-blue-900/20 blur-3xl" />
+          <BackgroundBlob className="bottom-0 right-0 w-[400px] h-[400px] bg-purple-100/50 dark:bg-purple-900/20 blur-3xl" />
         </div>
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] dark:opacity-[0.05] pointer-events-none" />
 
 
         <div className="container mx-auto max-w-4xl relative z-10">
           <motion.div variants={itemVariants} className="mb-16">
-            
+
             {/* Wrapper to handle inline width for the underline */}
             <div className="relative inline-block mb-10">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-700 to-purple-700 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent pb-2">
                 Үүсгэн байгуулагдсан түүх
               </h2>
-              
+
               {/* Animated Underline */}
-              <motion.div 
+              <motion.div
                 className="absolute bottom-0 left-0 h-1.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"
                 initial={{ width: 0 }}
                 whileInView={{ width: "100%" }}
@@ -216,15 +220,15 @@ export default function AboutPage() {
               />
             </div>
 
-            <div className="space-y-6 text-lg text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+            <div className="space-y-6 text-lg text-gray-700 dark:text-gray-300 leading-relaxed font-medium text-justify">
               <p>
-                YESH монгол шалгалтыг хүүхэлтэйгээр өнцөглөх асуудлаас эхлэл, сурагчдыг ухаалаг AI технологийн дэмжлэгээр бэлтгэх сонирхол төрсөн. Энэ систем бүх оюутнуудын сургалтын хэрэгцээ, түвшинг ойлгон хувь хүний аргаар сургах гэсэн үзэл ухаанаас төрсөн.
+                ЭЕШ-д бэлдэж буй сурагчдад тулгардаг бэрхшээлүүдийг технологийн шийдлээр шийдвэрлэх, тэдэнд хиймэл оюуны дэмжлэгтэйгээр илүү ухаалаг бэлдэх боломжийг олгох зорилготойгоор манай төсөл эхэлсэн. Энэхүү систем нь сурагч бүрийн суралцах хурд, түвшинд тохируулан хувь хүний онцлогт нийцсэн арга барилаар мэдлэг олгох алсын хараанаас үүдэлтэй юм.
               </p>
               <p>
-                Өнөө үед бид энэ үнэтэй зорилгодоо аль ч өргөлтөөргүй нийцэж ажиллаж байна. YESH шалгалтанд сууж байгаа оюутнуудын бүх хүндлүүлсэн асуулт, үндэслэлтэй өнөхсүүлгүүдэд хариулан сайн оруулга өгч, чадвартай сургалтын үйлчилгээ үзүүлдэг.
+                Өнөөдөр бид энэхүү эрхэм зорилгынхоо хүрээнд тасралтгүй хөгжүүлэлт хийн ажиллаж байна. ЭЕШ-д сууж буй оюутнуудын түгээмэл алддаг асуултуудад дүн шинжилгээ хийж, тэдний сул талыг бататгах замаар хамгийн оновчтой сургалтын төлөвлөгөөг гаргаж өгдөг.
               </p>
               <p>
-                Өнөө хүртэл хаврын амжилтанд бидний системээр гарсан сурагчид YESH шалгалтанд өндөр оноо авсан. Энэ бол бидэнд их үнэтэй амжилт юм. Ирээдүй дэх нэмэх хөгжилд сурагчдыг урьж байна.
+                Манай системээр дамжуулан бэлдсэн сурагчид ЭЕШ-даа амжилттай оролцож, өндөр оноо авч байгаа нь бидний хувьд хамгийн том амжилт юм. Бид боловсролын салбарыг технологитой хослуулан илүү гарц, илүү үр дүнтэй ирээдүйг хамтдаа бүтээнэ.
               </p>
             </div>
           </motion.div>
@@ -239,9 +243,9 @@ export default function AboutPage() {
         viewport={{ once: true, margin: "-100px" }}
         variants={containerVariants}
       >
-         {/* NEW: Subtle background blobs */}
-         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <BackgroundBlob className="-top-20 right-1/4 w-96 h-96 bg-indigo-100/40 dark:bg-indigo-900/20 blur-3xl" />
+        {/* NEW: Subtle background blobs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <BackgroundBlob className="-top-20 right-1/4 w-96 h-96 bg-indigo-100/40 dark:bg-indigo-900/20 blur-3xl" />
         </div>
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] dark:opacity-[0.05] pointer-events-none" />
 
@@ -296,9 +300,9 @@ export default function AboutPage() {
         viewport={{ once: true, margin: "-100px" }}
         variants={containerVariants}
       >
-         {/* NEW: Subtle background blobs */}
-         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <BackgroundBlob className="bottom-1/4 left-1/3 w-[600px] h-[600px] bg-pink-100/30 dark:bg-pink-900/10 blur-3xl" />
+        {/* NEW: Subtle background blobs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <BackgroundBlob className="bottom-1/4 left-1/3 w-[600px] h-[600px] bg-pink-100/30 dark:bg-pink-900/10 blur-3xl" />
         </div>
 
         <div className="container mx-auto max-w-6xl relative z-10">
@@ -321,8 +325,8 @@ export default function AboutPage() {
                   className="w-24 h-24 mx-auto bg-gradient-to-tr from-blue-400 to-purple-500 rounded-full mb-6 shadow-lg shadow-blue-500/20 p-1"
                   whileHover={{ scale: 1.05 }}
                 >
-                   <div className="w-full h-full rounded-full bg-white dark:bg-gray-800"></div>
-                   {/* Placeholder for actual user image if available later */}
+                  <div className="w-full h-full rounded-full bg-white dark:bg-gray-800"></div>
+                  {/* Placeholder for actual user image if available later */}
                 </motion.div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {member.name}
@@ -352,12 +356,12 @@ export default function AboutPage() {
         {/* Animated background elements (Stronger here for emphasis) */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <BackgroundBlob
-             className="-top-40 -left-40 w-[40rem] h-[40rem] bg-blue-500/20"
-             animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+            className="-top-40 -left-40 w-[40rem] h-[40rem] bg-blue-500/20"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
           />
-           <BackgroundBlob
-             className="-bottom-40 -right-40 w-[40rem] h-[40rem] bg-purple-500/20"
-             animate={{ scale: [1.2, 1, 1.2], opacity: [0.3, 0.5, 0.3] }}
+          <BackgroundBlob
+            className="-bottom-40 -right-40 w-[40rem] h-[40rem] bg-purple-500/20"
+            animate={{ scale: [1.2, 1, 1.2], opacity: [0.3, 0.5, 0.3] }}
           />
         </div>
 
